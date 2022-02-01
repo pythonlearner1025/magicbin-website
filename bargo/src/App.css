@@ -1,0 +1,8 @@
+body {
+    background-color: #020000;
+  }
+
+  @font-face {
+    font-family: fightThis;
+    src: url(FightThis.ttf);
+  }

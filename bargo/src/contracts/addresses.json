@@ -1,0 +1,28 @@
+{
+    "mockTokenOwner": {
+        "pk": "0x170D5c0c194769aD7039FD45236899A9d31CAA69",
+        "sk": "4970a2ad9c748d548c37870ce196d05921957844b5efea5e2bbb3384a7f8c694"
+    },
+    "multiPayOwner": {
+        "pk": "0xDAC4470592AD08E28ABe700d783976cDd8757301",
+        "sk": "9170b079b1248a76e530f9fe51a8019f95cfb74ef7538609d5f7245603895258"
+    },
+    "user1": {
+        "pk": "0x57e3103F9c9D5A95e55A16cDD6152f28A89fF196",
+        "sk": "86117a977be76feb1a7d7325493dd3d267995aae573af84cb278d4b205dc8287"
+    },
+    "user2":{
+        "pk": "0xb410b75Fb90f52f309e87a199C69dC144e569311",
+        "sk": "4476e1e587a7e702b8d6ca0bdec16f72b7d51b0fb021193f5a73ea379c4fb118"
+    },
+    "user3":{
+        "pk": "0xF5073e5B88f59738261Ca65267A6eFe054aF534b",
+        "sk": "192b5b2faf94a064654f5a91fc6d740ec242c44f6f6aeafff38b8f4b0e86009e"
+    },
+    "user4":{
+        "pk": "0x64277665B49bF05ce92a8f984fDE488a2399fd34",
+        "sk": "39a7bedeab5ca6241ff95bb293d15f29deedd30e5c22218947a4480c053f078e"
+    },
+    "mockTokenAddress": "0xd240b1561394EEAAAB368086371F5947f192d985",
+    "multiPayAddress": "0x71D4eA42121be65b3d9Cca1948B9CB9854c31e5b"
+}
