@@ -2,6 +2,7 @@ import React from "react";
 import {ethers} from "ethers";
 import axios from "axios";
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import {crypto} from "crypto";
 
 // HTML render js files:
 
@@ -389,24 +390,35 @@ export default class Dapp extends React.Component {
     */
 
     // register new User to trash club
-    _informUserPurchase(from, to, hash, userName){
-        
-        return axios.post(MIDDLE+"/register/newuser", {
-            recepient: to,
-            pubKey: from, 
-            txHash: hash,
+    _informUserPurchase(txHash, userPubKey, userHash, userName){
+        const data = {
+             txHash: txHash,
+            pubKey: userPubKey, 
+            hash: userHash,
             userName: userName
+        }
+        const sig = encryptSig(data);
+        return axios.post(MIDDLE+"/register/newuser", {
+            data:data,
+            sig:sig
         })
     }
 
 
     async _register(){
-        const registerData = await axios.post(MIDDLE+"/register/user",{
+        const data = {
             hash: this.state.userHash,
             userName: this.state.userName
+        }
+        const sig = encryptSig(data); 
+
+        const registerData = await axios.post(MIDDLE+"/register/user",{
+            data: data,
+            sig: sig,
         })
-        console.log('registerdata', registerData)
+        console.log('response from redis for /register/user', registerData)
         const registerSuccess = registerData.data.success;
+
         if (registerSuccess){
 
         } else {
@@ -450,14 +462,14 @@ export default class Dapp extends React.Component {
                 // TODO: send to redis user-book server the tx success msg
                 // if informPlayerPurcahse fails, poll till suceeds... add later
                 console.log('tx success... waiting for redis server resp')
-                const from = this.state.userAddress;
-                const to = TEST_SC_ADDRESS;
-                const hash = tx.hash;
+                const userPubKey = this.state.userAddress;
+                const txHash = tx.hash;
+                const trashHash = this.state.userHash;
                 const userName = this.state.userName;
                 const resp = await this._informUserPurchase(
-                    from,
-                    to,
-                    hash,
+                    txHash,
+                    userPubKey,
+                    trashHash,
                     userName,
                     );
                 // works!
@@ -511,5 +523,17 @@ export default class Dapp extends React.Component {
 
         return false;
     }
-   
+
 }
+
+ function encryptSig(data){
+        const data_string = JSON.stringify(data)
+        window.Buffer = window.Buffer || require('buffer').Buffer;
+        const privKey = require("../crypto/web_to_redis_privkey.json");
+        const signature = crypto.sign("sha256", Buffer.from(data_string),{
+            key:privKey.key,
+            padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
+        });
+        console.log('sig',signature.toString("base64"))
+        return signature.toString("base64");
+    }
