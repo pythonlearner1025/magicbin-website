@@ -2,7 +2,6 @@ import React from "react";
 import {ethers} from "ethers";
 import axios from "axios";
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
-import {crypto} from "crypto";
 
 // HTML render js files:
 
@@ -27,7 +26,10 @@ import {Fail} from "./Fail.js";
 const addresses = require("../contracts/addresses.json")
 const TokenArtifact = require("../contracts/MockToken.json")
 
-const MIDDLE = "http://localhost:3000"
+// send to local ROUTE first
+const ROUTE = "http://localhost:8000"
+const REDIS = "http://localhost:3000"
+
 const HARDHAT_NETWORK_ID = '80001';
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 const TEST_SC_ADDRESS = addresses.multiPayAddress;
@@ -77,7 +79,7 @@ export default class Dapp extends React.Component {
 
     // return info about servers
     componentDidMount(){
-        axios.get(MIDDLE + "/get/information",
+        axios.get(REDIS + "/get/information",
         ).then((resp)=>{
             console.log(resp.data)
             console.log(resp.status)
@@ -397,10 +399,9 @@ export default class Dapp extends React.Component {
             hash: userHash,
             userName: userName
         }
-        const sig = encryptSig(data);
-        return axios.post(MIDDLE+"/register/newuser", {
-            data:data,
-            sig:sig
+        return axios.post(ROUTE+"/route/newuser", {
+            // axios automatically serializes json object to string
+            data: data,
         })
     }
 
@@ -410,11 +411,8 @@ export default class Dapp extends React.Component {
             hash: this.state.userHash,
             userName: this.state.userName
         }
-        const sig = encryptSig(data); 
-
-        const registerData = await axios.post(MIDDLE+"/register/user",{
+        const registerData = await axios.post(ROUTE+"/route/user",{
             data: data,
-            sig: sig,
         })
         console.log('response from redis for /register/user', registerData)
         const registerSuccess = registerData.data.success;
@@ -526,14 +524,4 @@ export default class Dapp extends React.Component {
 
 }
 
- function encryptSig(data){
-        const data_string = JSON.stringify(data)
-        window.Buffer = window.Buffer || require('buffer').Buffer;
-        const privKey = require("../crypto/web_to_redis_privkey.json");
-        const signature = crypto.sign("sha256", Buffer.from(data_string),{
-            key:privKey.key,
-            padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
-        });
-        console.log('sig',signature.toString("base64"))
-        return signature.toString("base64");
-    }
+ 
