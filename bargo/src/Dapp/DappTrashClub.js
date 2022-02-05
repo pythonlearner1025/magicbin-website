@@ -28,7 +28,7 @@ const TokenArtifact = require("../contracts/MockToken.json")
 
 // send to local ROUTE first
 const ROUTE = "http://localhost:8000"
-const REDIS = "http://localhost:3000"
+const REDIS = "https://magibcinredis.com"
 
 const HARDHAT_NETWORK_ID = '80001';
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
